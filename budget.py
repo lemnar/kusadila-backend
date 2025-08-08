@@ -3,47 +3,57 @@
 class Category: 
 
     ## instantiations
-    def __init__(self, name:str = "UNNAMED", budget: int = 0):
+    def __init__(self, name:str = "UNNAMED", budget: float = 0):
         self.name = name
         self.budget = budget
         self.available = budget
-        self.transactions = []
+        self.activity = []
 
-    # concept ## updates the values in the function based on transactions list (you have to update the transactions list using functions)
-    # def __call__(self, *args, **kwds):
-        
-    ## apply a transaction to this budget category
-    def apply_transaction(self, transaction=None) : 
-        if transaction == None: 
-            return "ERROR: transaction does not exist"
-        try: 
-            if (str(transaction['category']) != self.name): 
-                return "ERROR: transaction does not belong to this category"
-            cost = float(transaction['amount'])
-            self.transactions.append(transaction)
-            self.available -= cost
-
-        except: 
-            print("ERROR RETRIEVING TRANSACTION AMOUNT, TRANSACTION DATA: ")
-            print(transaction)
-
-        
+    def setActivity(self, activities=[]):
+        cost = 0
+        if activities is []: 
+            return "ERROR: activity list is empty"
+        self.activity = []
+        for transaction in activities: 
+            try: 
+                cost += float(transaction['amount'])
+                self.activity.append(transaction)
+            except: 
+                print("ERROR RETRIEVING TRANSACTION AMOUNT, TRANSACTION DATA: ")
+                print(transaction)
+        self.available = self.budget - cost
 
 class Budget:
     def __init__(self):
-
+        self.budget = 0
+        self.available = 0
         self.categories = []
-    def add_category(self, category):
-        if (str(category) not in self.categories): 
-            self.categories.append(str(category))
-            return None
-        else: 
-            return "ERROR: Category already exists, could not add category: " + category
-    def remove_category(self, category): 
-        if (str(category) in self.categories): 
-            self.categories.remove(category)
-            return None
-        else: 
-            return "ERROR: Category does not exist in list, could not remove category: " + category
-        
+
+
+    # creates categories from a list of objects of form {name, budget, available, activity}
+    def setCategories(self, categories):
+        self.available = self.budget
+        self.categories = []
+        for cat in categories: 
+            try:
+                catobj = Category(cat['name'], cat['budget'])
+                catobj.setActivity(cat['activity'])
+                self.categories.append(catobj)
+            except: 
+                print("Category ", cat, "is not in the correct form")
+
+    def getCategories(self, dictForm: bool = True):
+        if dictForm: 
+            return [i.__dict__ for i in self.categories]
+        return self.categories
     
+        
+## test setup
+sex = {'name': 'sex', 'amount': '23'}
+liq = {
+    'name': 'Liqour',
+    'amount': '730'
+}
+C = Category("main", 300)
+budget = Budget()
+budget.setCategories([C.__dict__])

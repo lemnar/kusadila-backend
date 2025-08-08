@@ -2,11 +2,14 @@
 
 class Activities(): 
     def __init__(self):
-        self.activities = []
+        self.activity = []
 
-    def get(self):
-        return self.activities
-    
-    def set(self, activities):
-        self.activities = activities
-    
+    def getFromCategory(self, category):
+        return_list = []
+        for transaction in self.activity: 
+            try: 
+                if transaction['category'] == category: 
+                    return_list.append(transaction)
+            except: 
+                print("Transaction does not have a 'category' section")
+        return return_list
