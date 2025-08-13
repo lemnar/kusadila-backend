@@ -3,11 +3,12 @@
 class Category: 
 
     ## instantiations
-    def __init__(self, name:str = "UNNAMED", budget: float = 0):
+    def __init__(self, name:str = "---", budget:any = "---", id:str = ""):
         self.name = name
         self.budget = budget
         self.available = budget
         self.activity = []
+        self.id = id
 
     def setActivity(self, activities=[]):
         cost = 0
@@ -21,6 +22,8 @@ class Category:
             except: 
                 print("ERROR RETRIEVING TRANSACTION AMOUNT, TRANSACTION DATA: ")
                 print(transaction)
+        if self.budget == "---":
+            return
         self.available = self.budget - cost
 
 class Budget:
@@ -35,12 +38,12 @@ class Budget:
         self.available = self.budget
         self.categories = []
         for cat in categories: 
-            try:
-                catobj = Category(cat['name'], cat['budget'])
-                catobj.setActivity(cat['activity'])
-                self.categories.append(catobj)
-            except: 
-                print("Category ", cat, "is not in the correct form")
+            # try:
+            catobj = Category(cat['name'], cat['budget'], cat['id'])
+            catobj.setActivity(cat['activity'])
+            self.categories.append(catobj)
+            # except: 
+            #     print("Category ", cat, "is not in the correct form")
 
     def getCategories(self, dictForm: bool = True):
         if dictForm: 

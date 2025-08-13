@@ -26,13 +26,28 @@ def setActivity():
     return jsonify({"message": "Acvitivies transmitted"}), 200
 
 ## budget management
-
+@app.route('/setcategories', methods=['POST'])
+def setCategories():
+    if request.is_json: 
+        data = request.get_json()
+        for cat in data: 
+            activity = A.getFromCategory(cat['name'])
+            if activity: 
+                cat['activity'] = activity
+            else: 
+                cat['activity'] = []
+        B.setCategories(data)
+        print(B.getCategories())
+        return jsonify({"message" : "Categories transmitted"})
+    
+@app.route('/getcategories')
+def getCategories(): 
+    return B.getCategories()
 
 ## add a budgeting category
 # categories start with just "other" (not editable or deletable)
 
 
-# @app.route('/getbudget')
 
 
 
